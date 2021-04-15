@@ -59,7 +59,23 @@ class TitleBar : LinearLayout {
     private var rightText: String? = ""
     private var rightImageRes: Drawable? = null
 
-    var isLeftMode = false
+    private var isLeftMode = false
+
+    var onLeftClickListener: OnClickListener? = null
+        set(value) {
+            leftImageView?.setOnClickListener(value)
+            field = value
+        }
+    var onRightTextClickListener: OnClickListener? = null
+        set(value) {
+            rightTextView?.setOnClickListener(value)
+            field = value
+        }
+    var onRightImageClickListener: OnClickListener? = null
+        set(value) {
+            rightImageView?.setOnClickListener(value)
+            field = value
+        }
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -181,12 +197,11 @@ class TitleBar : LinearLayout {
         rightTextView?.setSingleLine()
         rightTextView?.ellipsize = TextUtils.TruncateAt.valueOf("END")
         rightTextView?.text = rightText ?: ""
+        rightTextView?.setOnClickListener(onRightTextClickListener)
     }
 
     private fun createLeftLeft(context: Context) {
-        leftImageView = ImageButton(context)
-        leftImageView?.id = R.id.iv_title_left
-        leftImageView?.setBackgroundResource(android.R.color.transparent)
+        buildLeftImage(context)
         val ivLayoutParams =
             RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
         ivLayoutParams.rightMargin = spaceIv2tv.toInt()
@@ -195,10 +210,6 @@ class TitleBar : LinearLayout {
             leftImageView,
             ivLayoutParams
         )
-        leftImageView?.setImageDrawable(leftImageRes)
-        if (leftImageRes == null) {
-            leftImageView?.visibility = GONE
-        }
 
         buildTitleText(context)
         val layoutParams =
@@ -208,6 +219,21 @@ class TitleBar : LinearLayout {
             titleTextView,
             layoutParams
         )
+    }
+
+    private fun buildLeftImage(context: Context) {
+        leftImageView = ImageButton(context)
+        leftImageView?.id = R.id.iv_title_left
+        leftImageView?.setBackgroundResource(android.R.color.transparent)
+
+        leftImageView?.setImageDrawable(leftImageRes)
+        if (leftImageRes == null) {
+            leftImageView?.visibility = GONE
+        } else {
+            onLeftClickListener?.let {
+                leftImageView?.setOnClickListener(it)
+            }
+        }
     }
 
     private fun buildTitleText(context: Context) {
@@ -229,9 +255,7 @@ class TitleBar : LinearLayout {
 
     private fun createCenterLeft(context: Context) {
         if (leftImageRes != null) {
-            leftImageView = ImageButton(context)
-            leftImageView?.setImageDrawable(leftImageRes)
-            leftImageView?.setBackgroundResource(android.R.color.transparent)
+            buildLeftImage(context)
             val layoutParams =
                 LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
             leftContainer.addView(leftImageView, layoutParams)
@@ -291,8 +315,8 @@ class TitleBar : LinearLayout {
         rightImageView?.setBackgroundColor(Color.GRAY)
         rightImageView?.setImageDrawable(rightImageRes)
         rightImageView?.setBackgroundResource(android.R.color.transparent)
+        rightImageView?.setOnClickListener(onRightImageClickListener)
     }
-
 
     private fun dp2px(dpValue: Float): Float {
         val scale = context.resources.displayMetrics.density

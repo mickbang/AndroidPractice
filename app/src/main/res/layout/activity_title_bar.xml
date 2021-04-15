@@ -22,6 +22,7 @@
 
 
     <com.lq.titlebar.TitleBar
+        android:id="@+id/titleBar1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -38,6 +39,7 @@
         app:titleTextSize="18dp" />
 
     <com.lq.titlebar.TitleBar
+        android:id="@+id/titleBar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -77,4 +79,10 @@
             android:layout_height="wrap_content"
             android:text="我是右边" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_showMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="显示消息"/>
 </LinearLayout>
