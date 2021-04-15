@@ -1,2 +1,3 @@
+include ':moudle_titlebar'
 include ':app'
 rootProject.name = "AndroidPractice"
