@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.*
 
 /**
@@ -14,7 +15,7 @@ import android.widget.*
  * @Description:
  *
  *  左边标题模式
- *
+ *  只有leftContainer与rightContainer不存在center开头的控件
  *
  *  中间标题模式
  *  1. 右边只能显示text或者image 且text的优先级大于image
@@ -33,13 +34,14 @@ const val RIGHT_WEIGHT = 0.2f
 const val CENTER_WEIGHT = 0.6f
 
 class TitleBar : LinearLayout {
-    lateinit var container: LinearLayout
+    lateinit var container: ViewGroup
     lateinit var leftContainer: RelativeLayout
     lateinit var centerContainer: RelativeLayout
     lateinit var rightContainer: RelativeLayout
 
     var leftImageView: ImageButton? = null
-    var centerTitleTextView: TextView? = null
+    var titleTextView: TextView? = null
+    var rightTextView: TextView? = null
     var rightImageView: ImageButton? = null
 
     private var titleTextSize: Float = 0f
@@ -51,14 +53,13 @@ class TitleBar : LinearLayout {
     private var titleBarHeight: Float = 0f
     private var leftImageRes: Drawable? = null
     private var titleBarBackground: Drawable? = null
-
+    private var spaceIv2tv: Float = 0f
     private var rightTextSize: Float = 0f
     private var rightTextColor: Int = 0
     private var rightText: String? = ""
     private var rightImageRes: Drawable? = null
 
     var isLeftMode = false
-    lateinit var leftModelLeftContainer: LinearLayout
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -74,6 +75,7 @@ class TitleBar : LinearLayout {
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         attrs?.let {
             val typeArray = context.obtainStyledAttributes(it, R.styleable.TitleBar)
+            isLeftMode = typeArray.getBoolean(R.styleable.TitleBar_isLeftMode, false)
             statusBarHeight = typeArray.getDimension(R.styleable.TitleBar_titleStatusBarHeight, 0f)
 
             titleBarHeight = typeArray.getDimension(R.styleable.TitleBar_titleBarHeight, dp2px(50f))
@@ -93,7 +95,9 @@ class TitleBar : LinearLayout {
             rightTextSize = typeArray.getDimension(R.styleable.TitleBar_rightTextSize, dp2px(13f))
             rightText = typeArray.getString(R.styleable.TitleBar_rightText)
             rightTextColor = typeArray.getColor(R.styleable.TitleBar_rightTextColor, Color.BLACK)
+
         }
+        spaceIv2tv = dp2px(10f)
     }
 
     private fun initView(context: Context) {
@@ -106,11 +110,13 @@ class TitleBar : LinearLayout {
         }
 
         container = LinearLayout(context)
-        container.orientation = HORIZONTAL
+        (container as LinearLayout).orientation = HORIZONTAL
         container.setBackgroundColor(Color.BLUE)
         container.setPadding(contentLeftPadding.toInt(), 0, contentRightPadding.toInt(), 0)
         val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, titleBarHeight.toInt())
         addView(container, layoutParams)
+
+
         if (!isLeftMode) {
             leftContainer = RelativeLayout(context)
             val leftLayoutParams = LayoutParams(0, LayoutParams.MATCH_PARENT)
@@ -129,7 +135,90 @@ class TitleBar : LinearLayout {
             initCenterTitle(context)
         } else {
 
+            leftContainer = RelativeLayout(context)
+            val leftLayoutParams =
+                LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, 0.3f)
+
+            rightContainer = RelativeLayout(context)
+            val rightLayoutParams =
+                LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, 0.7f)
+
+            container.addView(leftContainer, leftLayoutParams)
+            container.addView(rightContainer, rightLayoutParams)
+
+
+            initLeftTitle(context)
         }
+    }
+
+    private fun initLeftTitle(context: Context) {
+        createLeftLeft(context)
+        createLeftRight(context)
+    }
+
+    private fun createLeftRight(context: Context) {
+        if (!TextUtils.isEmpty(rightText) && rightImageRes != null) {
+            buildSingleRightImage(context)
+            buildRightText(context)
+            val layoutParams =
+                RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+            layoutParams.addRule(RelativeLayout.LEFT_OF, R.id.iv_title_right)
+            rightContainer.addView(rightTextView, layoutParams)
+        } else if (!TextUtils.isEmpty(rightText)) {
+            buildSingleRightText(context)
+        } else if (rightImageRes != null) {
+            buildSingleRightImage(context)
+        } else {
+
+        }
+    }
+
+    private fun buildRightText(context: Context) {
+        rightTextView = TextView(context)
+        rightTextView?.setTextColor(rightTextColor)
+        rightTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, rightTextSize)
+        rightTextView?.gravity = Gravity.CENTER
+        rightTextView?.setSingleLine()
+        rightTextView?.ellipsize = TextUtils.TruncateAt.valueOf("END")
+        rightTextView?.text = rightText ?: ""
+    }
+
+    private fun createLeftLeft(context: Context) {
+        leftImageView = ImageButton(context)
+        leftImageView?.id = R.id.iv_title_left
+        leftImageView?.setBackgroundResource(android.R.color.transparent)
+        val ivLayoutParams =
+            RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        ivLayoutParams.rightMargin = spaceIv2tv.toInt()
+        ivLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+        leftContainer.addView(
+            leftImageView,
+            ivLayoutParams
+        )
+        leftImageView?.setImageDrawable(leftImageRes)
+        if (leftImageRes == null) {
+            leftImageView?.visibility = GONE
+        }
+
+        buildTitleText(context)
+        val layoutParams =
+            RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.iv_title_left)
+        leftContainer.addView(
+            titleTextView,
+            layoutParams
+        )
+    }
+
+    private fun buildTitleText(context: Context) {
+        titleTextView = TextView(context)
+        titleTextView?.setTextColor(titleTextColor)
+        titleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
+        titleTextView?.gravity = Gravity.CENTER
+        titleTextView?.setSingleLine()
+        titleTextView?.ellipsize = TextUtils.TruncateAt.valueOf("END")
+        titleTextView?.text = titleText ?: ""
+        titleTextView?.setBackgroundColor(Color.GREEN)
     }
 
     private fun initCenterTitle(context: Context) {
@@ -150,44 +239,58 @@ class TitleBar : LinearLayout {
     }
 
     private fun createCenterCenter(context: Context) {
-        centerTitleTextView = TextView(context)
-        centerTitleTextView?.setTextColor(titleTextColor)
-        centerTitleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
-        centerTitleTextView?.gravity = Gravity.CENTER
-        centerTitleTextView?.setSingleLine()
-        centerTitleTextView?.ellipsize = TextUtils.TruncateAt.valueOf("END")
-        centerTitleTextView?.text = titleText
-        centerTitleTextView?.setBackgroundColor(Color.GREEN)
+        titleTextView = TextView(context)
+        titleTextView?.setTextColor(titleTextColor)
+        titleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
+        titleTextView?.gravity = Gravity.CENTER
+        titleTextView?.setSingleLine()
+        titleTextView?.ellipsize = TextUtils.TruncateAt.valueOf("END")
+        titleTextView?.text = titleText ?: ""
+        titleTextView?.setBackgroundColor(Color.GREEN)
         val layoutParams =
             LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        centerContainer.addView(centerTitleTextView, layoutParams)
+        centerContainer.addView(titleTextView, layoutParams)
     }
 
     private fun createCenterRight(context: Context) {
-        if (!TextUtils.isEmpty(rightText)) {
-            centerTitleTextView = TextView(context)
-            centerTitleTextView?.setTextColor(rightTextColor)
-            centerTitleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, rightTextSize)
-            centerTitleTextView?.gravity = Gravity.CENTER
-            centerTitleTextView?.setSingleLine()
-            centerTitleTextView?.ellipsize = TextUtils.TruncateAt.valueOf("END")
-            centerTitleTextView?.text = rightText
+        if (!TextUtils.isEmpty(rightText) && rightImageRes != null) {
+            buildSingleRightImage(context)
+            buildRightText(context)
             val layoutParams =
                 RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-            rightContainer.addView(centerTitleTextView, layoutParams)
+            layoutParams.addRule(RelativeLayout.LEFT_OF, R.id.iv_title_right)
+            rightContainer.addView(rightTextView, layoutParams)
+        } else if (!TextUtils.isEmpty(rightText)) {
+            buildSingleRightText(context)
         } else if (rightImageRes != null) {
-            rightImageView = ImageButton(context)
-            rightImageView?.setBackgroundColor(Color.GRAY)
-            rightImageView?.setImageDrawable(rightImageRes)
-            rightImageView?.setBackgroundResource(android.R.color.transparent)
-            val layoutParams =
-                RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-            rightContainer.addView(rightImageView, layoutParams)
+            buildSingleRightImage(context)
         } else {
 
         }
+    }
+
+    private fun buildSingleRightImage(context: Context) {
+        buildRightImage(context)
+        val layoutParams =
+            RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+        rightContainer.addView(rightImageView, layoutParams)
+    }
+
+    private fun buildSingleRightText(context: Context) {
+        buildRightText(context)
+        val layoutParams =
+            RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+        rightContainer.addView(rightTextView, layoutParams)
+    }
+
+    private fun buildRightImage(context: Context) {
+        rightImageView = ImageButton(context)
+        rightImageView?.id = R.id.iv_title_right
+        rightImageView?.setBackgroundColor(Color.GRAY)
+        rightImageView?.setImageDrawable(rightImageRes)
+        rightImageView?.setBackgroundResource(android.R.color.transparent)
     }
 
 

@@ -29,10 +29,52 @@
         app:contentRightPadding="16dp"
         app:leftImage="@drawable/abc_vector_test"
         app:rightImage="@drawable/abc_vector_test"
+        app:rightText="33333333333333333"
         app:titleBarBackground="@color/black"
         app:titleBarHeight="50dp"
         app:titleStatusBarHeight="25dp"
-        app:titleText="333333"
+        app:titleText="我是中间的标题我是中间的"
         app:titleTextColor="@color/white"
         app:titleTextSize="18dp" />
+
+    <com.lq.titlebar.TitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:contentLeftPadding="16dp"
+        app:contentRightPadding="16dp"
+        app:isLeftMode="true"
+        app:leftImage="@drawable/abc_vector_test"
+        app:rightImage="@drawable/abc_vector_test"
+        app:rightText="右边"
+        app:titleBarBackground="@color/black"
+        app:titleBarHeight="50dp"
+        app:titleText="左边的文字左边的文字左边的文字左边的文字左边的文字左边的文字"
+        app:titleTextColor="@color/white"
+        app:titleTextSize="18dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="11111111111111111111111111111111111111111111111111111111111111111111111111111111" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我是右边" />
+    </LinearLayout>
 </LinearLayout>
