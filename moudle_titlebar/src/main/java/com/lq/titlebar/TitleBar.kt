@@ -174,17 +174,16 @@ class TitleBar : LinearLayout {
             centerTitleTextView?.text = rightText
             val layoutParams =
                 RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-            layoutParams.addRule(RelativeLayout.ALIGN_RIGHT)
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
             rightContainer.addView(centerTitleTextView, layoutParams)
         } else if (rightImageRes != null) {
             rightImageView = ImageButton(context)
-            rightImageView?.id = R.id.iv_title_right
             rightImageView?.setBackgroundColor(Color.GRAY)
             rightImageView?.setImageDrawable(rightImageRes)
             rightImageView?.setBackgroundResource(android.R.color.transparent)
             val layoutParams =
                 RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-            layoutParams.addRule(RelativeLayout.ALIGN_RIGHT)
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
             rightContainer.addView(rightImageView, layoutParams)
         } else {
 
