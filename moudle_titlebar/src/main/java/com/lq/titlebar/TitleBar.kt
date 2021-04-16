@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 
@@ -322,4 +323,28 @@ class TitleBar : LinearLayout {
         val scale = context.resources.displayMetrics.density
         return dpValue * scale + 0.5f
     }
+
+    /**
+     * 标题居中 自定义中间布局
+     */
+    fun customCenterCenter(center: View) {
+        centerContainer.removeAllViews()
+        val layoutParams =
+            RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
+        centerContainer.addView(center, layoutParams)
+    }
+
+    /**
+     * 自定义右边布局
+     */
+    fun customRight(right: View) {
+        rightContainer.removeAllViews()
+        val layoutParams =
+            RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+        rightContainer.addView(right, layoutParams)
+    }
+
+
 }
