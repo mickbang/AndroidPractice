@@ -13,7 +13,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/moudle_titlebar" />
+            <option value="$PROJECT_DIR$/module_coroutine" />
+            <option value="$PROJECT_DIR$/module_textclock" />
+            <option value="$PROJECT_DIR$/module_titlebar" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -1,3 +1,5 @@
-include ':moudle_titlebar'
+include ':module_textClock'
+include ':module_coroutine'
+include ':module_titlebar'
 include ':app'
 rootProject.name = "AndroidPractice"
