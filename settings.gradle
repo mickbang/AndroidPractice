@@ -1,3 +1,4 @@
+include ':module_view'
 include ':module_textClock'
 include ':module_coroutine'
 include ':module_titlebar'

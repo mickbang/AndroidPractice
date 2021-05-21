@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/module_coroutine" />
             <option value="$PROJECT_DIR$/module_textclock" />
             <option value="$PROJECT_DIR$/module_titlebar" />
+            <option value="$PROJECT_DIR$/module_view" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
