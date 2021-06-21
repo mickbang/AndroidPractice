@@ -3,4 +3,8 @@
         <attr name="appWidgetBackgroundColor" format="color" />
         <attr name="appWidgetTextColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="FloatingLabelEditText">
+        <attr name="floatingEnable" format="boolean"/>
+    </declare-styleable>
 </resources>
