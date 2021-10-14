@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/module_textclock" />
             <option value="$PROJECT_DIR$/module_titlebar" />
             <option value="$PROJECT_DIR$/module_view" />
+            <option value="$PROJECT_DIR$/module_websocket" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
