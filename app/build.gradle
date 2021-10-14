@@ -43,6 +43,7 @@ dependencies {
     implementation project(path: ':module_titlebar')
     implementation project(path: ':module_coroutine')
     implementation project(path: ':module_textClock')
+    implementation project(path: ':AkLoglibrary')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
